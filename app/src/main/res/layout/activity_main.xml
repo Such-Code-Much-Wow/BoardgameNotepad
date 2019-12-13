@@ -17,8 +17,7 @@
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="startGame"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/stopBtn"
@@ -27,12 +26,12 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="100dp"
-        android:onClick="stopGame"
         android:text="@string/stop"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/startBtn"
+        android:enabled="false"/>
 
     <Button
         android:id="@+id/resetBtn"
@@ -41,12 +40,12 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="100dp"
-        android:onClick="resetGame"
         android:text="@string/reset"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stopBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/stopBtn"
+        android:enabled="false"/>
 
     <TextView
         android:id="@+id/playerLabel"
