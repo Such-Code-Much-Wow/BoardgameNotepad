@@ -83,7 +83,8 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/playerNamesLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:longClickable="true" />
 
     <TextView
         android:id="@+id/playerNamesLabel"
