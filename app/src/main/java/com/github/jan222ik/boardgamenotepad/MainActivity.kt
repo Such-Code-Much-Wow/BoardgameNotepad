@@ -2,6 +2,7 @@ package com.github.jan222ik.boardgamenotepad
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.github.jan222ik.boardgamenotepad.server.Server
 
 class MainActivity : AppCompatActivity() {
 
