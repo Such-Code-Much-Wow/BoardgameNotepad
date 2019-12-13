@@ -1,5 +1,5 @@
 package com.github.jan222ik.boardgamenotepad.game
 
 enum class GameState {
-    JOIN, PROGRESS, FINISHED
+    JOIN, SELECT_MODERATOR, ENTER_TEXT, MODERATOR_PEEK, REVEAL
 }

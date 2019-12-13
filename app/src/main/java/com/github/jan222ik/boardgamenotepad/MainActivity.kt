@@ -11,9 +11,12 @@ import com.github.jan222ik.boardgamenotepad.utils.Utils
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var intentField : Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        intentField = Intent(this, ServerService::class.java)
         playerNamesLabel.movementMethod = ScrollingMovementMethod()
         ipLabel.setOnLongClickListener {
             val s = ipLabel.text
@@ -27,18 +30,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startGame(view: View) {
-        startService(Intent(this, ServerService::class.java))
+        startService(intentField)
         ipLabel.text = Utils.getIPAddress(true)
     }
 
     fun stopGame(view: View) {
-        stopService(Intent(this, ServerService::class.java))
+        stopService(intentField)
         ipLabel.text = ""
     }
 
     fun resetGame(view: View) {
-        stopService(Intent(this, ServerService::class.java))
-        startService(Intent(this, ServerService::class.java))
+        stopService(intentField)
+        startService(intentField)
     }
 
 }
