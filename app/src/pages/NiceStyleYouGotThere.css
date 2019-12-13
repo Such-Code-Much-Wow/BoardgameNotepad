@@ -1,0 +1,77 @@
+.wrapper {
+    width: 960px;
+    margin: 0 auto;
+}
+
+header {
+    width: 960px;
+}
+
+nav, section {
+    float: left;
+}
+
+nav {
+    width: 200px;
+    margin-right: 10px;
+}
+
+section {
+    width: 750px;
+}
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    background: #2E2E2E;
+    color: white;
+    font-family: Helvetica;
+    text-align: center;
+    margin: 20px;
+}
+
+header,
+nav,
+section {
+    border: 1px solid rgba(255,255,255,0.8);
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+header {
+    padding: 20px 0;
+}
+
+nav, section {
+    padding: 200px 0;
+}
+
+#playerInput
+{
+    height:150px;
+    width: 450px;
+    font-size:14pt;
+    background-color: #A4A4A4;
+    color: white;
+}
+
+#answerButton
+{
+    color: black;
+    background-color: #DA81F5;
+}
+
+#answerButton:hover
+{
+    background: white;
+}
+
+#sponsorParagraph
+{
+    font-size: 10px;
+    color: #A4A4A4;
+}
