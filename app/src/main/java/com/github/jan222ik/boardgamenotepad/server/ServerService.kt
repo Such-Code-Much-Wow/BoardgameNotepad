@@ -49,33 +49,30 @@ class Server {
                 get("/") {
                     call.respondText("Hello World!", ContentType.Text.Plain)
                 }
-                get("/round/new") {
-                    RestApi.startNewRound()
+                get("/game/reset") {
+                    GameHandler.reset()
                     call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
                 }
                 get("/games/{id}/join") {
                     val realname = call.receive<Parameters>()["realname"]!!
                     val id = call.parameters["id"]!!.toInt()
                     if (id < 1) call.respond(HttpStatusCode.BadRequest)
-                    val playerID = GameHandler.addPlayerToGame(GameHandler.getGameByID(id), realname)
-                    call.respondRedirect("/games/$id/players/$playerID")
+                    //val playerID = GameHandler.addPlayerToGame(GameHandler.getGameByID(id), realname)
+                   //call.respondRedirect("/games/$id/players/$playerID")
                 }
                 get("/games/{id}/join") {
                     val realname = call.receive<Parameters>()["realname"]!!
                     val id = call.parameters["id"]!!.toInt()
                     if (id < 1) call.respond(HttpStatusCode.BadRequest)
-                    GameHandler.addPlayerToGame(GameHandler.getGameByID(id), realname)
+                    //GameHandler.addPlayerToGame(GameHandler.getGameByID(id), realname)
                     call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
                 }
                 get("/games/{id}/status") {
                     val id = call.parameters["id"]!!.toInt()
                     if (id < 1) call.respond(HttpStatusCode.BadRequest)
                     val gson = Gson()
-                    call.respondText(
-                        gson.toJson(GameHandler.getGameByID(id)),
-                        ContentType.Application.Json,
-                        HttpStatusCode.OK
-                    )
+                    ////// HttpStatusCode.OK
+                    //)
                 }
             }
         }
@@ -85,13 +82,4 @@ class Server {
     fun stop() {
         server.stop(1000L, 1000L, TimeUnit.MILLISECONDS)
     }
-}
-
-object RestApi {
-
-    fun startNewRound() {
-        GameHandler.newGame()
-    }
-
-
 }
