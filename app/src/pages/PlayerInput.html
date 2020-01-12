@@ -1,32 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Game Input</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="NiceStyleYouGotThere.css">
-    <link rel="script" href="HandleNewInput.js">
+    <title>Sexy Unicorns</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="playInput.js"></script>
+    <style>
+        .wrapper {
+            width: 960px;
+            margin: 0 auto;
+        }
 
-<script>
-    function handlePlayerInput() {
-        var input = document.getElementById("playerInput").value;
-        //send input to backend
-        window.location.href = "./ResultsPage.html";
-    }
-</script>
+        header {
+            width: 960px;
+        }
 
+        nav, section {
+            float: left;
+        }
+
+        nav {
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        section {
+            width: 750px;
+        }
+
+        *, *:before, *:after {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2E2E2E;
+            color: white;
+            font-family: Helvetica;
+            text-align: center;
+            margin: 20px;
+        }
+
+        header,
+        nav,
+        section {
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        header {
+            padding: 20px 0;
+        }
+
+        nav, section {
+            padding: 200px 0;
+        }
+
+        #playerInput {
+            height: 150px;
+            width: 90%;
+            font-size: 14pt;
+            background-color: #A4A4A4;
+            color: white;
+        }
+
+        #answerButton {
+            color: black;
+            width: 90%;
+            background-color: #DA81F5;
+        }
+
+        #answerButton:hover {
+            background: white;
+        }
+
+        #sponsorParagraph {
+            font-size: 10px;
+            color: #A4A4A4;
+        }
+    </style>
+</head>
 <body>
+<div id="joinDiv">
+    <form>
+        <input type="text" placeholder="Name" id="nameInput"/><br><br>
+        <input type="button" id="joinBtn" onclick="handlePlayerJoin()" value="Join">
+    </form>
+</div>
+<div id="inputDiv" hidden="none">
     <h1>Game Input</h1><br>
     <form action="gameInputForm">
         Use your brain and enter the best answer you could think of:<br><br>
         <textarea id="playerInput"></textarea><br><br>
         <input type="button" id="answerButton" onclick="handlePlayerInput()" value="Answer and cross your fingers">
-    </form><br>
-    <img src="Unicorny.gif" alt="unicorns" width="200" height="128"><br>
-    <p id="sponsorParagraph">Sponsored by Unicorny</p>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </form>
+    <br>
+</div>
+<img src="fancypants.png" alt="unicorns" width="80%" height="80%"><br>
+
+<p id="sponsorParagraph">Sponsored by Unicorny</p>
 </body>
 </html>
