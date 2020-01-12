@@ -1,5 +1,6 @@
 package com.github.jan222ik.boardgamenotepad
 
+import com.github.jan222ik.boardgamenotepad.server.Server
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -12,6 +13,9 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        //Server().start()
+        //while (true) {
+
+        //}
     }
 }

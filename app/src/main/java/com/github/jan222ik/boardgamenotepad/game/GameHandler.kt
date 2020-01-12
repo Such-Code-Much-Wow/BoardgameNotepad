@@ -11,9 +11,11 @@ object GameHandler {
         Game.reset()
     }
 
-    fun addPlayerToGame(realname: String): Player {
-        val player = Player(++playerIdCounter, realname)
-        //Game.addPlayer(player)
-        return player
+    fun restart() {
+        Game.restart()
+    }
+
+    fun addPlayerToGame(realname: String): Int {
+        return Game.addPlayer(realname, ++playerIdCounter)
     }
 }

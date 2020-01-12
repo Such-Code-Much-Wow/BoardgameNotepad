@@ -1,10 +1,11 @@
 package com.github.jan222ik.boardgamenotepad.game
 
+import com.google.gson.annotations.SerializedName
 import java.util.stream.Collectors
 
 object Game {
     var players: MutableList<Player> = mutableListOf()
-    lateinit var moderator: Player
+    var moderator: Player? = null
     var messages: HashMap<Player, String> = hashMapOf()
     var gameState = GameState.JOIN
 
@@ -74,4 +75,12 @@ object Game {
             throw IllegalStateException("You can only see the messages, in reveal phase")
         }
     }
+
+    fun toShareAbleState(plID: Int): SharableGameState = SharableGameState(players, moderator, gameState)
+
+    data class SharableGameState(
+        @SerializedName("players") val players: List<Player>,
+        @SerializedName("moderator") val moderator: Player?,
+        @SerializedName("state") val gameState: GameState
+    )
 }
