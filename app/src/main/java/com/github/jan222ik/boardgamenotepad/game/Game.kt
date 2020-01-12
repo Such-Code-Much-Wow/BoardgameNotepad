@@ -19,6 +19,14 @@ object Game {
         gameState = GameState.JOIN
     }
 
+    fun endJoin() : Boolean {
+        val enoughPlayer = players.size > 2
+        if (enoughPlayer) {
+            gameState = GameState.SELECT_MODERATOR
+        }
+        return enoughPlayer
+    }
+
     fun addMessage(player: Player, message: String) {
         if (gameState == GameState.ENTER_TEXT) {
             messages[player] = message
