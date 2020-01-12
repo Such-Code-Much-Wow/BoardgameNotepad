@@ -99,7 +99,8 @@
             if(event.code === "Enter"){
                 handlePlayerJoin();
             }
-        })
+        });
+        setInterval(poll, 5000);
     }
 </script>
 <div id="joinDiv">
@@ -116,9 +117,11 @@
     <br>
 </div>
 <div id="resultDiv" hidden="none">
-    <ul id="resultList">
-
-    </ul>
+    <ul id="resultList"></ul>
+    <input id="continueBtn" type="button" value="Continue" onclick="handleContinueGame()">
+</div>
+<div id="pendingDiv" hidden="none">
+    <h1 id="pendingText"></h1>
 </div>
 <img src="fancypants.png" alt="unicorns" width="80%" height="80%"><br>
 
