@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="playInput.js"></script>
+    <link rel="icon" href="icon.png">
     <style>
         .wrapper {
             width: 960px;
@@ -39,7 +40,7 @@
 
         body {
             background: #2E2E2E;
-            color: white;
+            color: #00fff7;
             font-family: Helvetica;
             text-align: center;
             margin: 20px;
@@ -66,17 +67,23 @@
             width: 90%;
             font-size: 14pt;
             background-color: #A4A4A4;
-            color: white;
+            color: #00fff7;
+        }
+
+        input {
+            background-color: #A4A4A4;
         }
 
         #answerButton {
             color: black;
             width: 90%;
             background-color: #DA81F5;
+            color: #00fff7;
         }
 
         #answerButton:hover {
             background: white;
+            color: #00fff7;
         }
 
         #sponsorParagraph {
@@ -85,12 +92,19 @@
         }
     </style>
 </head>
-<body>
+<body onload="initialize()">
+<script>
+    function initialize() {
+        document.getElementById("nameInput").addEventListener("keyup", function (event) {
+            if(event.code === "Enter"){
+                handlePlayerJoin();
+            }
+        })
+    }
+</script>
 <div id="joinDiv">
-    <form>
-        <input type="text" placeholder="Name" id="nameInput"/><br><br>
-        <input type="button" id="joinBtn" onclick="handlePlayerJoin()" value="Join">
-    </form>
+    <input type="text" placeholder="Name" id="nameInput"/><br><br>
+    <input type="submit" onclick="handlePlayerJoin()" id="joinBtn" value="Join">
 </div>
 <div id="inputDiv" hidden="none">
     <h1>Game Input</h1><br>
@@ -100,6 +114,11 @@
         <input type="button" id="answerButton" onclick="handlePlayerInput()" value="Answer and cross your fingers">
     </form>
     <br>
+</div>
+<div id="resultDiv" hidden="none">
+    <ul id="resultList">
+
+    </ul>
 </div>
 <img src="fancypants.png" alt="unicorns" width="80%" height="80%"><br>
 
