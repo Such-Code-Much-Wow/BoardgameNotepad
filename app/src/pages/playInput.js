@@ -4,7 +4,7 @@ let isMod = true;
 
 function poll() {
     let request = new XMLHttpRequest();
-    let url = "msg";
+    let url = "msg"; //todo set url
     console.log("poll called");
     request.onreadystatechange = function () {
         if (true || this.status === 200) { //todo remove true
