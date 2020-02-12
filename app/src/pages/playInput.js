@@ -1,4 +1,4 @@
-let gameState = null;
+let gameState = null; // todo: replace with actual state
 let isMod = false;
 
 function poll() {
@@ -8,8 +8,8 @@ function poll() {
     request.onreadystatechange = function () {
         if (this.status === 200) {
             console.log(arguments);
-            //todo: updatet gaemsatea
-            if (gameState !== "pollState") {
+            //todo: update gamestate
+            if (gameState) {
                 switch (gameState) {
                     case "JOIN":
                         showDiv("joinDiv");
@@ -18,10 +18,14 @@ function poll() {
                         showDiv("inputDiv");
                         break;
                     case "MODERATOR_PEEK":
-                        if (isMod)
+                        if (isMod) {
+                            toggleContinueBtn(false);
+                            handleResult(arguments);
                             showDiv("resultDiv");
+                        }
                         break;
                     case "REVEAL":
+                        handleResult();
                         showDiv("resultDiv");
                         break;
                 }
@@ -34,39 +38,42 @@ function poll() {
     request.send();
 }
 
-function sleep(time) {
-    return new Promise((resolve => setInterval(resolve, time)));
-}
-
 function handlePlayerInput() {
     let input = document.getElementById("playerInput").value;
     if (input && input.length > 0) {
         let request = new XMLHttpRequest();
         let url = "msg";
-        url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
+        //url = "http://homepages.fhv.at/mle2266/vote.php";
+        request.onreadystatechange = function () {
 
-        //delete this after testing:
-        var called = false;
-
-        // request.onreadystatechange = onRequestCallback;
+        };
         request.open("POST", url);
         request.send(input);
-        handlePending("Please Wait");
+        handlePending("Please Wait...");
+        resetInputs();
     }
 
 }
 
-function handleResult() {
-    var htmlList = document.getElementById("resultList");
-    var listData = ["get", "on", "my", "level", "peasant"];
-    for (var i = 0; i < listData.length; ++i) {
-        // create an item for each one
-        var listItem = document.createElement('li');
+function toggleContinueBtn(flag) {
+    let btn = document.getElementById("continueBtn");
+    btn.hidden = flag;
+}
 
-        // Add the item text
+function resetInputs() {
+    let htmlList = document.getElementById("resultList");
+    while (htmlList.firstChild) {
+        htmlList.removeChild(htmlList.firstChild);
+    }
+    toggleContinueBtn(true)
+}
+
+function handleResult(listData) {
+    let htmlList = document.getElementById("resultList");
+    listData = ["get", "on", "my", "level", "peasant"];
+    for (let i = 0; i < listData.length; ++i) {
+        let listItem = document.createElement('li');
         listItem.innerHTML = listData[i];
-
-        // Add listItem to the listElement
         htmlList.appendChild(listItem);
     }
     showDiv("resultDiv");
@@ -80,19 +87,18 @@ function handlePlayerJoin() {
         let url = "game/join?realname=" + name;
         //url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
         request.onreadystatechange = function () {
-            console.log("yes");
+
         };
         request.open("GET", url);
         request.send();
-
-        showDiv("inputDiv");
+        handlePending("Please Wait...");
     } else {
         alert("GIVE ME A NAME PEASANT")
     }
 }
 
 function handlePending(value) {
-    document.getElementById("pendingText").value = value;
+    document.getElementById("pendingText").innerHTML = value;
     showDiv("pendingDiv");
 }
 
