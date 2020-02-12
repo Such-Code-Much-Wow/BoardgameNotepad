@@ -107,10 +107,8 @@ class Server {
                     Game.pickModerator(Game.players.find{ it.playerId == plID }!!)
                     call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
                 }
-                get("/game/players/{playerID}") {
-                    //Game state
-                    val plID = call.parameters["playerID"]!!.toInt()
-                    call.respondText { Gson().toJson(Game.toShareAbleState(plID)) }
+                get("/game/players/status") {
+                    call.respondText { Gson().toJson(Game.toShareAbleState()) }
                 }
                 get("/game/players/{playerID}/msg") {
                     //Get msg

@@ -76,7 +76,7 @@ object Game {
         }
     }
 
-    fun toShareAbleState(plID: Int): SharableGameState = SharableGameState(players, moderator, gameState, messages.keys.size)
+    fun toShareAbleState(): SharableGameState = SharableGameState(players, moderator, gameState, messages.keys.size)
 
     fun getMessagesForPlayer(player: Player): HashMap<Player, String>? {
         if (gameState == GameState.MODERATOR_PEEK) {
