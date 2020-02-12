@@ -1,13 +1,14 @@
 let gameState = ""; // todo: replace with actual state
 let currentState = "";
+let playerId;
 let isMod = true;
 
 function poll() {
     let request = new XMLHttpRequest();
-    let url = "msg"; //todo set url
+    let url = "/game/players/status";
     console.log("poll called");
     request.onreadystatechange = function () {
-        if (true || this.status === 200) { //todo remove true
+        if (this.status === 200) { //todo remove true
             console.log(arguments);
             //todo: update gamestate
             if (gameState && currentState !== gameState) {
@@ -94,9 +95,9 @@ function handlePlayerJoin() {
     if (name && name.length > 0) {
         let request = new XMLHttpRequest();
         let url = "game/join?realname=" + name;
-        //url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
         request.onreadystatechange = function () {
-
+            console.log(arguments);
+            //playerId = ?; //todo set id
         };
         request.open("GET", url);
         request.send();
