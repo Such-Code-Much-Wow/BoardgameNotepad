@@ -2,12 +2,17 @@ package com.github.jan222ik.boardgamenotepad.game
 
 import com.google.gson.annotations.SerializedName
 import java.util.stream.Collectors
+import kotlin.properties.Delegates
 
 object Game {
-    var players: MutableList<Player> = mutableListOf()
+    var players: MutableList<Player> by Delegates.observable(mutableListOf()) { _, oldValue, newValue ->
+        onPlayersChanged?.invoke(oldValue, newValue)
+    }
     var moderator: Player? = null
     var messages: HashMap<Player, String> = hashMapOf()
     var gameState = GameState.JOIN
+
+    var onPlayersChanged: ((MutableList<Player>, MutableList<Player>) -> Unit)? = null
 
     fun reset() {
         messages = hashMapOf()
@@ -20,7 +25,7 @@ object Game {
         gameState = GameState.JOIN
     }
 
-    fun endJoin() : Boolean {
+    fun endJoin(): Boolean {
         val enoughPlayer = players.size > 2
         if (enoughPlayer) {
             gameState = GameState.SELECT_MODERATOR
@@ -76,7 +81,8 @@ object Game {
         }
     }
 
-    fun toShareAbleState(): SharableGameState = SharableGameState(players, moderator, gameState, messages.keys.size)
+    fun toShareAbleState(): SharableGameState =
+        SharableGameState(players, moderator, gameState, messages.keys.size)
 
     fun getMessagesForPlayer(player: Player): List<String>? {
         if (gameState == GameState.MODERATOR_PEEK) {
@@ -100,7 +106,7 @@ object Game {
         return list
     }
 
-    fun reveal() : Boolean {
+    fun reveal(): Boolean {
         return if (gameState == GameState.MODERATOR_PEEK) {
             gameState = GameState.REVEAL
             true
