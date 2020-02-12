@@ -1,15 +1,16 @@
-let gameState = null; // todo: replace with actual state
-let isMod = false;
+let gameState = ""; // todo: replace with actual state
+let currentState = "";
+let isMod = true;
 
 function poll() {
     let request = new XMLHttpRequest();
     let url = "msg";
     console.log("poll called");
     request.onreadystatechange = function () {
-        if (this.status === 200) {
+        if (true || this.status === 200) { //todo remove true
             console.log(arguments);
             //todo: update gamestate
-            if (gameState) {
+            if (gameState && currentState !== gameState) {
                 switch (gameState) {
                     case "JOIN":
                         showDiv("joinDiv");
@@ -18,18 +19,23 @@ function poll() {
                         showDiv("inputDiv");
                         break;
                     case "MODERATOR_PEEK":
-                        if (isMod) {
+                        if (isMod) { //todo check if client is mod
                             toggleContinueBtn(false);
-                            handleResult(arguments);
+                            handleResult(listData, true); //todo get actual data
                             showDiv("resultDiv");
                         }
                         break;
                     case "REVEAL":
-                        handleResult();
+                        var listData;
+                        handleResult(listData); //todo get actual data
                         showDiv("resultDiv");
                         break;
+
                 }
+                currentState = gameState;
             }
+            if (msgs.size > 0) //todo get msgs
+                handlePending("Please Wait...\nInputs: " + msgs.size);
             console.log("poll");
         }
     };
@@ -68,12 +74,15 @@ function resetInputs() {
     toggleContinueBtn(true)
 }
 
-function handleResult(listData) {
+function handleResult(listData, isMod) {
     let htmlList = document.getElementById("resultList");
     listData = ["get", "on", "my", "level", "peasant"];
     for (let i = 0; i < listData.length; ++i) {
         let listItem = document.createElement('li');
-        listItem.innerHTML = listData[i];
+        if (!isMod)
+            listItem.innerHTML = '<a href="">' + listData[i] + '</a>'; //todo update href
+        else
+            listItem.innerHTML = listData[i];
         htmlList.appendChild(listItem);
     }
     showDiv("resultDiv");
