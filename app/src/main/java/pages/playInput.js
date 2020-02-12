@@ -1,15 +1,16 @@
-let gameState = null;
-let isMod = false;
+let gameState = ""; // todo: replace with actual state
+let currentState = "";
+let isMod = true;
 
 function poll() {
     let request = new XMLHttpRequest();
     let url = "msg";
     console.log("poll called");
     request.onreadystatechange = function () {
-        if (this.status === 200) {
+        if (true || this.status === 200) { //todo remove true
             console.log(arguments);
-            //todo: updatet gaemsatea
-            if (gameState !== "pollState") {
+            //todo: update gamestate
+            if (gameState && currentState !== gameState) {
                 switch (gameState) {
                     case "JOIN":
                         showDiv("joinDiv");
@@ -18,14 +19,23 @@ function poll() {
                         showDiv("inputDiv");
                         break;
                     case "MODERATOR_PEEK":
-                        if (isMod)
+                        if (isMod) { //todo check if client is mod
+                            toggleContinueBtn(false);
+                            handleResult(listData, true); //todo get actual data
                             showDiv("resultDiv");
+                        }
                         break;
                     case "REVEAL":
+                        var listData;
+                        handleResult(listData); //todo get actual data
                         showDiv("resultDiv");
                         break;
+
                 }
+                currentState = gameState;
             }
+            if (msgs.size > 0) //todo get msgs
+                handlePending("Please Wait...\nInputs: " + msgs.size);
             console.log("poll");
         }
     };
@@ -34,39 +44,45 @@ function poll() {
     request.send();
 }
 
-function sleep(time) {
-    return new Promise((resolve => setInterval(resolve, time)));
-}
-
 function handlePlayerInput() {
     let input = document.getElementById("playerInput").value;
     if (input && input.length > 0) {
         let request = new XMLHttpRequest();
         let url = "msg";
-        url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
+        //url = "http://homepages.fhv.at/mle2266/vote.php";
+        request.onreadystatechange = function () {
 
-        //delete this after testing:
-        var called = false;
-
-        // request.onreadystatechange = onRequestCallback;
+        };
         request.open("POST", url);
         request.send(input);
-        handlePending("Please Wait");
+        handlePending("Please Wait...");
+        resetInputs();
     }
 
 }
 
-function handleResult() {
-    var htmlList = document.getElementById("resultList");
-    var listData = ["get", "on", "my", "level", "peasant"];
-    for (var i = 0; i < listData.length; ++i) {
-        // create an item for each one
-        var listItem = document.createElement('li');
+function toggleContinueBtn(flag) {
+    let btn = document.getElementById("continueBtn");
+    btn.hidden = flag;
+}
 
-        // Add the item text
-        listItem.innerHTML = listData[i];
+function resetInputs() {
+    let htmlList = document.getElementById("resultList");
+    while (htmlList.firstChild) {
+        htmlList.removeChild(htmlList.firstChild);
+    }
+    toggleContinueBtn(true)
+}
 
-        // Add listItem to the listElement
+function handleResult(listData, isMod) {
+    let htmlList = document.getElementById("resultList");
+    listData = ["get", "on", "my", "level", "peasant"];
+    for (let i = 0; i < listData.length; ++i) {
+        let listItem = document.createElement('li');
+        if (!isMod)
+            listItem.innerHTML = '<a href="">' + listData[i] + '</a>'; //todo update href
+        else
+            listItem.innerHTML = listData[i];
         htmlList.appendChild(listItem);
     }
     showDiv("resultDiv");
@@ -80,19 +96,18 @@ function handlePlayerJoin() {
         let url = "game/join?realname=" + name;
         //url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
         request.onreadystatechange = function () {
-            console.log("yes");
+
         };
         request.open("GET", url);
         request.send();
-
-        showDiv("inputDiv");
+        handlePending("Please Wait...");
     } else {
         alert("GIVE ME A NAME PEASANT")
     }
 }
 
 function handlePending(value) {
-    document.getElementById("pendingText").value = value;
+    document.getElementById("pendingText").innerHTML = value;
     showDiv("pendingDiv");
 }
 
