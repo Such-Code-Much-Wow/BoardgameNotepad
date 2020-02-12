@@ -284,115 +284,154 @@ class Server {
     }
 
     fun js() = """
-        let gameState = null;
-        let isMod = false;
+let gameState = "";
+let currentState = "JOIN";
+let playerId;
+let exists = false;
 
-        function poll() {
-            let request = new XMLHttpRequest();
-            let url = "msg";
-            console.log("poll called");
-            request.onreadystatechange = function () {
-                if (this.status === 200) {
-                    console.log(arguments);
-                    //todo: updatet gaemsatea
-                    if (gameState !== "pollState") {
-                        switch (gameState) {
-                            case "JOIN":
-                                showDiv("joinDiv");
-                                break;
-                            case "ENTER_TEXT":
-                                showDiv("inputDiv");
-                                break;
-                            case "MODERATOR_PEEK":
-                                if (isMod)
-                                    showDiv("resultDiv");
-                                break;
-                            case "REVEAL":
-                                showDiv("resultDiv");
-                                break;
-                        }
-                    }
-                    console.log("poll");
+function poll() {
+    let request = new XMLHttpRequest();
+    let url = "/game/players/status";
+    request.onreadystatechange = async function () {
+        await sleep(1000);
+        gameState = JSON.parse(this.response).state;
+        if (this.status === 200) {
+            if (gameState && currentState !== gameState) {
+                switch (gameState) {
+                    case "JOIN":
+                        showDiv("joinDiv");
+                        break;
+                    case "SELECT_MODERATOR":
+                        selectMod();
+                        break;
+                    case "ENTER_TEXT":
+                        showDiv("inputDiv");
+                        break;
+                    case "MODERATOR_PEEK":
+                        getMessages(true);
+                        break;
+                    case "REVEAL":
+                        getMessages(false);
+                        break;
+
                 }
-            };
-
-            request.open("GET", url);
-            request.send();
-        }
-
-        function sleep(time) {
-            return new Promise((resolve => setInterval(resolve, time)));
-        }
-
-        function handlePlayerInput() {
-            let input = document.getElementById("playerInput").value;
-            if (input && input.length > 0) {
-                let request = new XMLHttpRequest();
-                let url = "msg";
-                url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
-
-                //delete this after testing:
-                var called = false;
-
-                // request.onreadystatechange = onRequestCallback;
-                request.open("POST", url);
-                request.send(input);
-                handlePending("Please Wait");
+                currentState = gameState;
             }
-
         }
+    };
 
-        function handleResult() {
-            var htmlList = document.getElementById("resultList");
-            var listData = ["get", "on", "my", "level", "peasant"];
-            for (var i = 0; i < listData.length; ++i) {
-                // create an item for each one
-                var listItem = document.createElement('li');
+    request.open("GET", url);
+    request.send();
+}
 
-                // Add the item text
-                listItem.innerHTML = listData[i];
+async function sleep(time) {
+    return new Promise((resolve => setInterval(resolve, time)));
+}
 
-                // Add listItem to the listElement
-                htmlList.appendChild(listItem);
-            }
+function getMessages(btn) {
+    let request = new XMLHttpRequest();
+    let url = "game/players/" + playerId + "/msg";
+    request.onreadystatechange = async function () {
+        if (this.status === 200) {
+            await sleep(1000);
+            let list = JSON.parse(this.response);
+            toggleContinueBtn(!btn);
+            handleResult(list);
             showDiv("resultDiv");
         }
+    };
+    request.open("GET", url);
+    request.send();
 
-        function handlePlayerJoin() {
-            let name = document.getElementById("nameInput").value;
+}
 
-            if (name && name.length > 0) {
-                let request = new XMLHttpRequest();
-                let url = "game/join?realname=" + name;
-                //url = "http://homepages.fhv.at/mle2266/vote.php"; //for test purposes
-                request.onreadystatechange = function () {
-                    console.log("yes");
-                };
-                request.open("GET", url);
-                request.send();
+function handlePlayerInput() {
+    let input = document.getElementById("playerInput").value;
+    if (input && input.length > 0) {
+        let request = new XMLHttpRequest();
+        let url = "game/players/" + playerId + "/msg";
+        request.open("POST", url);
+        request.send(input);
+        handlePending("Please Wait...");
+        resetInputs();
+    }
+}
 
-                showDiv("inputDiv");
-            } else {
-                alert("GIVE ME A NAME PEASANT")
+function selectMod() {
+    let request = new XMLHttpRequest();
+    let url = "game/players/" + playerId + "/moderator";
+    request.open("GET", url);
+    request.send();
+}
+
+function toggleContinueBtn(flag) {
+    let btn = document.getElementById("continueBtn");
+    btn.hidden = flag;
+}
+
+function resetInputs() {
+    let htmlList = document.getElementById("resultList");
+    while (htmlList.firstChild) {
+        htmlList.removeChild(htmlList.firstChild);
+    }
+    toggleContinueBtn(true);
+    exists = false;
+}
+
+function handleResult(listData) {
+    if(!exists) {
+        exists = true;
+        let htmlList = document.getElementById("resultList");
+        for (let i = 0; i < listData.length; ++i) {
+            let name = listData[i].split("§")[0];
+            let text = listData[i].split("§")[1];
+            let listItem = document.createElement('li');
+            listItem.innerHTML = name + ": " + text;
+            htmlList.appendChild(listItem);
+        }
+        showDiv("resultDiv");
+    }
+}
+
+function handlePlayerJoin() {
+    let name = document.getElementById("nameInput").value;
+
+    if (name && name.length > 0) {
+        let request = new XMLHttpRequest();
+        let url = "game/join?realname=" + name;
+        request.onreadystatechange = function () {
+            if (this.status === 200) {
+                playerId = this.responseText;
+                handlePending("Please Wait...");
             }
-        }
+        };
+        request.open("GET", url);
+        request.send();
+    } else {
+        alert("GIVE ME A NAME PEASANT")
+    }
+}
 
-        function handlePending(value) {
-            document.getElementById("pendingText").value = value;
-            showDiv("pendingDiv");
-        }
+function handlePending(value) {
+    document.getElementById("pendingText").innerHTML = value;
+    showDiv("pendingDiv");
+}
 
-        function handleContinueGame() {
-            //send to rest to go to next state
-        }
+function handleContinueGame() {
+    toggleContinueBtn(true);
+    let request = new XMLHttpRequest();
+    let url = "game/reveal";
+    request.open("GET", url);
+    request.send();
+}
 
-        function showDiv(div) {
-            let divs = document.getElementsByTagName("div");
-            for (let i = 0; i < divs.length; i++) {
-                divs[i].hidden = true;
-            }
-            document.getElementById(div).hidden = false;
-        }
+function showDiv(div) {
+    let divs = document.getElementsByTagName("div");
+    for (let i = 0; i < divs.length; i++) {
+        divs[i].hidden = true;
+    }
+    document.getElementById(div).hidden = false;
+}
     """.trimIndent()
 
 

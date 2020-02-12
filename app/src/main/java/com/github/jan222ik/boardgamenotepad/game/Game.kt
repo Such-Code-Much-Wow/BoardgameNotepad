@@ -78,19 +78,26 @@ object Game {
 
     fun toShareAbleState(): SharableGameState = SharableGameState(players, moderator, gameState, messages.keys.size)
 
-    fun getMessagesForPlayer(player: Player): HashMap<Player, String>? {
+    fun getMessagesForPlayer(player: Player): List<String>? {
         if (gameState == GameState.MODERATOR_PEEK) {
             if (player == moderator) {
-                return messages
+                return messages.map2String()
             } else {
                 return null
             }
         } else {
             if (gameState == GameState.REVEAL) {
-                return messages
+                return messages.map2String()
             }
             return null
         }
+    }
+    fun HashMap<Player, String>.map2String() : List<String> {
+        val list = mutableListOf<String>()
+        this.entries.forEach {
+            list.add(it.key.realname.plus("§").plus(it.value))
+    }
+        return list
     }
 
     fun reveal() : Boolean {
