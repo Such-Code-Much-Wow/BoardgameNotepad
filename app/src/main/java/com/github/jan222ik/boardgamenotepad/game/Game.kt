@@ -76,11 +76,34 @@ object Game {
         }
     }
 
-    fun toShareAbleState(plID: Int): SharableGameState = SharableGameState(players, moderator, gameState)
+    fun toShareAbleState(plID: Int): SharableGameState = SharableGameState(players, moderator, gameState, messages.keys.size)
+
+    fun getMessagesForPlayer(player: Player): HashMap<Player, String>? {
+        if (gameState == GameState.MODERATOR_PEEK) {
+            if (player == moderator) {
+                return messages
+            } else {
+                return null
+            }
+        } else {
+            if (gameState == GameState.REVEAL) {
+                return messages
+            }
+            return null
+        }
+    }
+
+    fun reveal() : Boolean {
+        return if (gameState == GameState.MODERATOR_PEEK) {
+            gameState = GameState.REVEAL
+            true
+        } else false
+    }
 
     data class SharableGameState(
         @SerializedName("players") val players: List<Player>,
         @SerializedName("moderator") val moderator: Player?,
-        @SerializedName("state") val gameState: GameState
+        @SerializedName("state") val gameState: GameState,
+        @SerializedName("msgCount") val msgCount: Int
     )
 }

@@ -12,6 +12,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.request.receive
+import io.ktor.request.receiveText
 import io.ktor.response.*
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -67,7 +68,6 @@ class Server {
                     call.respondBytes(ContentType.Image.PNG) {
                         helper.LoadBytes(R.mipmap.fancypants)
                     }
-                    //call.respondText("Hello World!", ContentType.Text.Plain)
                 }
                 //get(path = "/favicon.ico") {
                 //TODO Serve Favicon
@@ -80,35 +80,70 @@ class Server {
                     GameHandler.restart()
                     call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
                 }
+                get("/game/reveal") {
+                    val reveal = Game.reveal()
+                    if (reveal) {
+                        call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, HttpStatusCode.Forbidden.description)
+                    }
+                }
                 // /game/join?realname=<name>
                 get("/game/join") {
                     val realname = call.parameters["realname"]!!
                     val playerID = GameHandler.addPlayerToGame(realname)
-                    //call.respondText { playerID.toString() }
+                    call.respondText { playerID.toString() }
+                }
+                get("/game/endjoin") {
+                    val endJoin = Game.endJoin()
+                    if (endJoin) {
+                        call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
+                    } else {
+                        call.respond(HttpStatusCode.ExpectationFailed, HttpStatusCode.ExpectationFailed.description)
+                    }
+                }
+                get("/game/players/{playerID}/moderator") {
+                    val plID = call.parameters["playerID"]!!.toInt()
+                    Game.pickModerator(Game.players.find{ it.playerId == plID }!!)
                     call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
                 }
                 get("/game/players/{playerID}") {
                     //Game state
                     val plID = call.parameters["playerID"]!!.toInt()
-                    //call.respondText { "Hello player $plID" }
                     call.respondText { Gson().toJson(Game.toShareAbleState(plID)) }
                 }
                 get("/game/players/{playerID}/msg") {
                     //Get msg
-                    call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
+                    val plID = call.parameters["playerID"]!!.toInt()
+                    val msgs = Game.getMessagesForPlayer(Game.players.find{ it.playerId == plID }!!)
+                    if (msgs != null) {
+                        call.respondText { Gson().toJson(msgs) }
+                    } else {
+                        call.respond(HttpStatusCode.NoContent, HttpStatusCode.NoContent.description)
+                    }
                 }
                 post("/game/players/{playerID}/msg") {
                     //Post msg
-                    call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
+                    val text: String = call.receiveText()
+                    if (text.isEmpty()) {
+                        call.respond(HttpStatusCode.BadRequest, HttpStatusCode.BadRequest.description)
+                    } else {
+                        val plID = call.parameters["playerID"]!!.toInt()
+                        Game.addMessage(Game.players.find{ it.playerId == plID }!!, text)
+                        call.respond(HttpStatusCode.OK, HttpStatusCode.OK.description)
+                    }
                 }
             }
         }
         server!!.start(wait = false)
+        /*
         listOf("Anton", "Dieter", "Anna").forEach {
             GameHandler.addPlayerToGame(it)
         }
         Game.endJoin()
         Game.pickModerator(Game.players.first { it.playerId == 1 })
+
+         */
     }
 
     fun stop() {
