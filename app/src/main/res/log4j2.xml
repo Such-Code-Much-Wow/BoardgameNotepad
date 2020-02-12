@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH.mm.ss::SSS} %style{%t}{cyan} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %maxLen{%10marker}{10} : %-40logger{-5} - %msg%n" disableAnsi="false"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- avoid duplicated logs with additivity=false -->
+        <Root level="ALL" additivity="false">
+            <AppenderRef ref="LogToConsole"/>
+        </Root>
+    </Loggers>
+</Configuration>
